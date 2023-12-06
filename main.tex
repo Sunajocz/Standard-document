@@ -1,0 +1,104 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Social, Environmental, and Economic Determinants on Medicare and Medicaid Enrollment Across U.S. Counties}
+\author{Suna Bai, Yue Feng, Hantang Qin}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+In the United States, 'Healthcare' is always a critical topic. People care about enrollment in public health insurance programs, thinking which is playing a pivotal role in the public health condition, especially for those people with limited financial resources. Medicare and Medicaid are serving as the vital pillars of this nation's healthcare system. 
+
+However, focusing too much on the enrollment rates in these programs sometimes can be blurring for the policymakers to truly understand and detect all the determinants of the healthcare system. Here we want to shed light on the intersection of social, environmental, and economic determinants, which offers a multifaceted lens through which to explore the variations in Medicare and Medicaid across the U.S. 
+
+By diving into the intricate web of determinants, we aim to uncover patterns that illuminate the challenges and opportunities associated with comprehensive healthcare coverage for all Americans. 
+
+This research includes the following data sets:
+\begin{itemize}
+    \item {ACS: This data set contains demographic and socioeconomic information for counties in the U.S. from 2015 to 2020. The key variables are: Unemployment Rate; Medicare/medicaid Coverage; Total Population; and Having Health Insurance Coverage with Health Insurance and without Health Insurance. }
+    \item {BEA: This data set contains summarized information on the economic status of individuals in the United States. The key variable is personal income by county and metropolitan area from 2015 to 2020 in current dollars.}
+    \item {AHRQ: This database contains information on the economic status of the U.S. population and the provision of health care. The key variables are: Population Density, Median Houshold Income, Percentage of Hospital for Profit, and Total Number of Mental Health Providers.}
+\end{itemize}
+
+
+\section{Methodologies}
+\subsection{Approach}
+This project includes the following parts:
+\begin{itemize}
+    \item Data collecting and cleaning
+    
+    We use the ACS API to scrape the data from the website: 
+    
+    https://api.census.gov/data/{}/acs/acs5
+
+    And downloaded the data from from the BEA and the AHRQ website, where BEA mainly turns wide format into long format; AHRQ's data set is separated for each year, and we integrated and reshaped the data sets through code.
+    In terms of merging, we merged the three data sets through County Fips while retaining State Fips as the unit of state analysis, and finally, we excluded the portion outside the continental United States. All data processing was generalized using functions.
+
+    \item Text analysis
+
+We use two research papers, "The Kansas Medicaid Buy-In- Factors influencing enrollment and Health care utilization" and "Health Services Research - 2002 - Pezzin - Medicaid Enrollment among Elderly Medicare Beneficiaries  Individual", for text analysis. We use word cloud, a visual representation of the word frequencies. To avoid too many stop words being selected, we deliberately exclude the stop words, like "and, or, so" etc. in analyzing the most frequent words in the document. Next, we conduct a topic modeling,  Latent Dirichlet Allocation (LDA), to  discover abstract topics within the document. 
+
+With the results of topic modeling, we try to identify the top five topics in each of the research papers. We then identify the possible related variables, such as income, and elderly population, that can account for Medicare/Medicaid coverage in Kansas and within the US. 
+
+    \item Model analysis
+
+In the model, we use OLS linear regression (the naive model), Panel data fixed effects (explainable), and machine learning models Random Forest (most percise) to identify the causal relationships between Medicare/Medicaid coverage and important determinants. Our results generally should have a high R2 (>0.5), meaning that most of the variance of the y variable can be explained by our independent variables. Nevertheless, high R2 may also indicate some potential data leakage issues or overfitting. The results should be scrutinized more carefully with more solid and diverse data sources. 
+
+    \item Visualization
+    Visualizing and Understanding spatial patterns is crucial for uncovering the trends across diverse geographic regions. Thus, for the visualization part, we designed dynamic functions aimed at visually representing yearly data related to U.S. counties. Our functions illustrate the variation of variables over time and all around the nation. 
+
+        Line plot: show how data changed within different states in the years 2015 to 2020. 
+        
+        Scatter plot: reveals the relationship between any two variables in the research for a specific year or in general.
+        
+        Heat map: indicates the correlation between variables by colors. This correlation matrix is useful for our model analysis part. 
+        
+        Geographic map: encapsulates a comprehensive approach to the informative plots, serving for understanding the evolving landscape of variables related to the healthcare system.
+        
+
+    \item Shiny: We picked the most interactive two plots which are line plot by state and scatter plot by year on the website. For the line plot, it allows users to choose the state and the variable. In the graph, users are able to see the trend of the variable in that state from the years 2015 to 2020. For scatter plots, it enables users to choose 2 variables and optionally choose the year of data. If users select the specific year, they will see the relationship shown in the scatter plot between the two variables. Otherwise, the plot gives the plot showing the total data. 
+    
+\end{itemize}
+\subsection{Code}
+\subsubsection{Strength}
+\begin{itemize}
+    \item {Multifaceted Analysis: By examining socio-economic, demographic, and health service variables, our research can identify complex interactions and dependencies, offering a more nuanced understanding of the healthcare system.}
+    \item {Time-Series Analysis: The use of data from 2015 to 2020 allows for an analysis of trends over time, which is crucial for understanding how the healthcare landscape has evolved and predicting future changes.}
+\end{itemize}
+\subsubsection{Weaknesses and Difficulties}
+\begin{itemize}
+    \item Design of Shiny: Shiny on Python is still under development. Thus, it is quite difficult to have a more attractive design for the website. So we chose to make our website neater, which we think is easy for users to use and obtain information. 
+    \item Shortage of data: We only cover five years in this project. Because the social and economic data is not as comprehensive as we thought when we decided to work on this topic. Especially, we found it hard to get the data from the county level, which indicates that the data collection is not good enough to give signals by dividing the collection process into the minimal geographic level. 
+
+Moreover, the data for environmental determinants are harder to gather for all states in the US. This data shortage hurdles our model performance and made our quantitative analysis less compelling. For this field, we suggest more qualitative research should be conducted to investigate such relationships. 
+
+\end{itemize}
+\section{Conclusion}
+\subsection{A brief discussion of the results}
+
+Our panel data model results indicate factors like Median Household Income and the Total Number of Mental Health Providers have significant positive impacts on Medicare/Medicaid Coverage, while Population Density has a significant negative impact. The impact of the Percentage of Hospitals for Profit is uncertain within the panel data model as it is not significant.  
+
+To conclude, we believe that we have developed a comprehensive framework for analyzing the data. This framework encompasses various methodologies including API web scraping, exploratory data analysis, data visualization, and geographical analysis. Additionally, it features the construction of interactive Shiny dashboards, basic natural language processing techniques such as frequency analysis and topic modeling, and the exploration of linear models using both panel data and the Random Forest algorithm.
+
+
+\section{Next Step}
+We anticipate the data sets can be updated continuously. Therefore we can establish this website with the models and analysis we created to researchers. Ideally, policy makers can see these data analysis and visualizations to help them to improve the healthcare system for the nation. 
+
+Besides, we are looking for more detailed way to provide the geographic landscape using the maps. Through the map, we can get more perceptual intuition. We also plan on turning the maps into interactive graphs and putting them on to the shiny to provide more comprehensive visualization to researcher and policy makers to use. 
+
+In order to ensure the quality of our models, more data needs to be included in the analysis. We need to conduct more examination among variables to avoid violating basic OLS assumptions, such as multi-col-linearity or heteroskedasticity. 
+
+\end{document}
